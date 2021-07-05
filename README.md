@@ -48,11 +48,12 @@ MCP4261-503 can be a drop-in substitute.
 	RPi.GPIO
 	requests
 	unidecode
+	yaml
 
 To install the required dependencies on Raspberry Pi OS:
 
 ```
-apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gpio
+apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gpio python3-yaml
 ```
 
 ## Use
