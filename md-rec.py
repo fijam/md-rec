@@ -72,7 +72,7 @@ def set_stop(server_url):
 	urlendpoint = server_url + '/api/player'
 	requests.post(urlendpoint + '/stop')
 
-def input_string(string_normalized,press,hold):
+def input_string(string_normalized):
 	# this function needs work
 	track_letterlist = list(string_normalized)
 	current_set = 'uppercase' # default
@@ -89,22 +89,22 @@ def input_string(string_normalized,press,hold):
 			push_button('SearchLeft',press,common_set.index(letter)+1)
 			push_button('Stop',press,1)
 		elif (letter in uppercase_set):
-			enter_correct_set('uppercase',current_set,press)
+			enter_correct_set('uppercase',current_set)
 			push_button('SearchRight',press,uppercase_set.index(letter))
 			push_button('Stop',press,1)
 			current_set = 'uppercase'
 		elif (letter in lowercase_set):
-			enter_correct_set('lowercase',current_set,press)
+			enter_correct_set('lowercase',current_set)
 			push_button('SearchRight',press,lowercase_set.index(letter))
 			push_button('Stop',press,1)
 			current_set = 'lowercase'
 		elif (letter in numbers_set):
-			enter_correct_set('numbers',current_set,press)
+			enter_correct_set('numbers',current_set)
 			push_button('SearchRight',press,numbers_set.index(letter))
 			push_button('Stop',press,1)
 			current_set = 'numbers'
 		else:
-			enter_correct_set('numbers',current_set,press)
+			enter_correct_set('numbers',current_set)
 			push_button('SearchRight',press,24) # catch-all replace with '?'
 			push_button('Stop',press,1)
 			current_set = 'numbers'
@@ -112,7 +112,7 @@ def input_string(string_normalized,press,hold):
 	push_button('Stop',hold,1)
 
 
-def enter_correct_set(wanted_set,current_set,press):
+def enter_correct_set(wanted_set,current_set):
 	# look up how many times to press 'Pause' to get to the wanted charset
 	set_moves = { 	'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3 },
         		'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2 },
@@ -177,7 +177,7 @@ for track_number, track in enumerate(tracklist):
 		time.sleep(0.5)
 		push_button('Display',hold,1)
 		push_button('Stop',press,2) # enter labelling mode
-		input_string(tracklist[track_number],press,hold)
+		input_string(tracklist[track_number])
 		track_remaining = request_track_remaining(server_url)
 		print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
 		time.sleep(track_remaining - offset)
