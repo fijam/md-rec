@@ -3,7 +3,7 @@ import sys
 import string
 import time
 import datetime
-import configparser
+import yaml
 
 import requests
 import spidev
@@ -12,20 +12,18 @@ from unidecode import unidecode
 
 # configuration
 conf_file = 'settings.conf'
-config = configparser.ConfigParser()
-config.optionxform = lambda option: option # preserve case
 try:
 	with open(conf_file) as f:
-		config.read_file(f)
+		settings = yaml.safe_load(f)
 except (FileNotFoundError, IOError):
 	print('No settings file found. Run configurator.py script first')
 	sys.exit(1)
 
-server_url = config['Network']['server_url']
-offset = config['Timings'].getfloat('offset')
-press = config['Timings'].getfloat('press')
-hold = config['Timings'].getfloat('hold')
-wiper_dict = dict(config['Wipers'])
+server_url = settings['server_url']
+offset = settings['offset']
+press = settings['press']
+hold = settings['hold']
+wiper_dict = settings['wipers']
 
 # functions
 def request_playlist_info(server_url):
