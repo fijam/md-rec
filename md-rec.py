@@ -24,6 +24,7 @@ offset = settings['offset']
 press = settings['press']
 hold = settings['hold']
 wiper_dict = settings['wipers']
+set_moves = settings['set_moves']
 
 # functions
 def request_playlist_info(server_url):
@@ -112,10 +113,6 @@ def input_string(string_normalized):
 
 def enter_correct_set(wanted_set,current_set):
 	# look up how many times to press 'Pause' to get to the wanted charset
-	set_moves = { 	'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3 },
-        		'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2 },
-		        'numbers':   {'uppercase':2, 'lowercase':3, 'numbers':1 }}
-
 	times = set_moves[current_set][wanted_set]
 	push_button('Pause',press,times)
 

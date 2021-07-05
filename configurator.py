@@ -38,6 +38,11 @@ button_dict = {
 	'Record' : 224
 }
 
+#character set navigation for MZ-R90
+set_moves = {'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3 },
+       		'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2 },
+	        'numbers':   {'uppercase':2, 'lowercase':3, 'numbers':1 }}
+
 for button in button_dict:
 	wiper_value = input('Wiper value for ' + button +': (default: ' + str(button_dict[button]) + ') ' )
 	button_dict[button] = set_default(wiper_value, button_dict[button])
@@ -47,6 +52,7 @@ with open('settings.conf', 'w') as config_file:
 		'offset':offset,
 		'press':press,
 		'hold':hold,
-		'wipers':button_dict},
+		'wipers':button_dict,
+		'set_moves':set_moves},
 		config_file,
 		default_flow_style=False)
