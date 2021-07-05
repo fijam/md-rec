@@ -27,20 +27,17 @@ wiper_dict = settings['wipers']
 set_moves = settings['set_moves']
 
 # functions
-def request_playlist_info(server_url):
-	urlendpoint = server_url + '/api/playlists'
-	response = requests.get(urlendpoint)
+def request_playlist_info():
+	response = requests.get(server_url + '/api/playlists')
 	# return a tuple of playlist ID and number of tracks
 	return response.json()['playlists'][0]['id'], response.json()['playlists'][0]['itemCount']
 
-def request_playlist_content(server_url,playlist_info):
+def request_playlist_content(playlist_info):
 	tracklist = []
 	total_time = 0
-	playlist_ID = playlist_info[0]
 	item_count = playlist_info[1]
-	urlendpoint = server_url + '/api/query'
-	payload = {'playlists':'true','playlistItems':'true','plref':playlist_ID,'plrange':'0:'+str(item_count),'plcolumns':'%artist% - %title%, %length_seconds%'}
-	response = requests.get(urlendpoint, params=payload)
+	payload = {'playlists':'true','playlistItems':'true','plref':playlist_info[0],'plrange':'0:'+str(item_count),'plcolumns':'%artist% - %title%, %length_seconds%'}
+	response = requests.get(server_url+'/api/query', params=payload)
 
 	for track in range(item_count):
 		sanitized_track_name = unidecode(response.json()['playlistItems']['items'][track]['columns'][0])
@@ -55,21 +52,18 @@ def request_playlist_content(server_url,playlist_info):
 	# return a list of tracks to label
 	return tracklist
 
-def request_track_remaining(server_url):
-	urlendpoint = server_url + '/api/player'
-	response = requests.get(urlendpoint)
+def request_track_remaining():
+	response = requests.get(server_url + '/api/player')
 	remaining = response.json()['player']['activeItem']['duration'] - response.json()['player']['activeItem']['position']
 	# return remaining time in track (in seconds)
 	return remaining
 
-def set_mode_play(server_url,playlist_info):
-	urlendpoint = server_url + '/api/player'
-	requests.post(urlendpoint, params = {'isMuted':'false','playbackMode':'0'} ) # set default playback mode
-	requests.post(urlendpoint + '/play/' + playlist_info[0]+'/0')
+def set_mode_play(playlist_info):
+	requests.post(server_url + '/api/player', params = {'isMuted':'false','playbackMode':'0'} ) # set default playback mode
+	requests.post(server_url + '/api/player/play/' + playlist_info[0]+'/0')
 
-def set_stop(server_url):
-	urlendpoint = server_url + '/api/player'
-	requests.post(urlendpoint + '/stop')
+def set_stop():
+	requests.post(server_url + '/api/player/stop')
 
 def input_string(string_normalized):
 	# this function needs work
@@ -134,7 +128,7 @@ def push_button(button,type,times):
 
 def cleanup_exit():
 	push_button('Stop',press,1)
-	set_stop(server_url)
+	set_stop()
 	GPIO.cleanup()
 	print('Bye!')
 	sys.exit(0)
@@ -159,12 +153,12 @@ print('REC Standby...')
 print('> Open up Foobar2000 with the playlist you want to record')
 input('Press Enter when ready.')
 print('The following tracks will be burned & labelled:')
-playlist_info = request_playlist_info(server_url)
-tracklist = request_playlist_content(server_url,playlist_info)
+playlist_info = request_playlist_info()
+tracklist = request_playlist_content(playlist_info)
 input('Press Enter to begin.')
 
 push_button('Pause',press,1) # start recording
-set_mode_play(server_url,playlist_info)
+set_mode_play(playlist_info)
 
 for track_number, track in enumerate(tracklist):
 	try:
@@ -173,7 +167,7 @@ for track_number, track in enumerate(tracklist):
 		push_button('Display',hold,1)
 		push_button('Stop',press,2) # enter labelling mode
 		input_string(tracklist[track_number])
-		track_remaining = request_track_remaining(server_url)
+		track_remaining = request_track_remaining()
 		print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
 		time.sleep(track_remaining - offset)
 		if track_number+1 != len(tracklist):
@@ -184,7 +178,7 @@ for track_number, track in enumerate(tracklist):
 	except KeyboardInterrupt:
 		answer = input('\nFinish recording current track? [Y/N] ')
 		if answer == 'Y':
-			track_remaining = request_track_remaining(server_url)
+			track_remaining = request_track_remaining()
 			print('Finishing track: ' + track + f' left: {track_remaining:0.0f}s')
 			time.sleep(track_remaining - offset)
 			cleanup_exit()
