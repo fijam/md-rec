@@ -20,11 +20,18 @@ except (FileNotFoundError, IOError):
 	sys.exit(1)
 
 server_url = settings['server_url']
-offset = settings['offset']
-press = settings['press']
-hold = settings['hold']
+offset = settings['timing_offset']
+press = settings['timing_press']
+hold = settings['timing_hold']
 wiper_dict = settings['wipers']
-set_moves = settings['set_moves']
+set_moves = settings['char_set_moves']
+common_set = settings['char_common_set']
+common_set.reverse()
+lowercase_set = settings['char_lowercase_set']
+uppercase_set = settings['char_uppercase_set']
+numbers_set = settings['char_uppercase_set']
+#unsupported_set = ['[', '\', ']', '^', '{', '|', '}', '~']
+
 
 # functions
 def request_playlist_info():
@@ -66,49 +73,30 @@ def set_stop():
 	requests.post(server_url + '/api/player/stop')
 
 def input_string(string_normalized):
-	# this function needs work
 	track_letterlist = list(string_normalized)
 	current_set = 'uppercase' # default
-	common_set = [ "'", ',', '/', ':', ' ']
-	common_set.reverse() # we move backwards on this list
-	uppercase_set = list(string.ascii_uppercase)
-	lowercase_set = list(string.ascii_lowercase)
-	numbers_set = list(string.digits) + ['!', '"', '#', '$', '%', '&', '(', ')', '*', '.', ';', '<', '=', '>', '?', '@', '_', '`', '+', '-']
-	#unsupported_set = ['[', '\', ']', '^', '{', '|', '}', '~']
 
 	for letter in track_letterlist:
 		if (letter in common_set):
-			push_button('Pause',press,1)
-			push_button('SearchLeft',press,common_set.index(letter)+1)
-			push_button('Stop',press,1)
+			current_set = input_letter(current_set,current_set,common_set.index(letter)+1,'SearchLeft')
 		elif (letter in uppercase_set):
-			enter_correct_set('uppercase',current_set)
-			push_button('SearchRight',press,uppercase_set.index(letter))
-			push_button('Stop',press,1)
-			current_set = 'uppercase'
+			current_set = input_letter('uppercase',current_set,uppercase_set.index(letter),'SearchRight')
 		elif (letter in lowercase_set):
-			enter_correct_set('lowercase',current_set)
-			push_button('SearchRight',press,lowercase_set.index(letter))
-			push_button('Stop',press,1)
-			current_set = 'lowercase'
+			current_set = input_letter('lowercase',current_set,lowercase_set.index(letter),'SearchRight')
 		elif (letter in numbers_set):
-			enter_correct_set('numbers',current_set)
-			push_button('SearchRight',press,numbers_set.index(letter))
-			push_button('Stop',press,1)
-			current_set = 'numbers'
+			current_set = input_letter('numbers',current_set,numbers_set.index(letter),'SearchRight')
 		else:
-			enter_correct_set('numbers',current_set)
-			push_button('SearchRight',press,24) # catch-all replace with '?'
-			push_button('Stop',press,1)
-			current_set = 'numbers'
+			current_set = input_letter('numbers',current_set,24,'SearchRight') # catch-all replace with '?'
 
 	push_button('Stop',hold,1)
 
-
-def enter_correct_set(wanted_set,current_set):
-	# look up how many times to press 'Pause' to get to the wanted charset
+def input_letter(wanted_set,current_set,letter_index,search_button):
 	times = set_moves[current_set][wanted_set]
 	push_button('Pause',press,times)
+	push_button(search_button,press,letter_index)
+	push_button('Stop',press,1)
+	current_set = wanted_set
+	return current_set
 
 def hw_push(type,wiper):
 	#SPI MAGIC
@@ -119,7 +107,7 @@ def hw_push(type,wiper):
 	GPIO.output(23,1) # disable SHDN pin
 	time.sleep(type)
 	GPIO.output(23,0) # enable SHDN pin
-	time.sleep(type)
+	time.sleep(press)
 
 def push_button(button,type,times):
 	for i in range (times):

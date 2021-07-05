@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import yaml
 import ipaddress
+import string
 
 def set_default(input,default):
 	if input == '':
@@ -43,16 +44,26 @@ set_moves = {'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3 },
        		'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2 },
 	        'numbers':   {'uppercase':2, 'lowercase':3, 'numbers':1 }}
 
+#character set for MZ-R90
+common_set = [ "'", ',', '/', ':', ' ']
+uppercase_set = list(string.ascii_uppercase)
+lowercase_set = list(string.ascii_lowercase)
+numbers_set = list(string.digits) + ['!', '"', '#', '$', '%', '&', '(', ')', '*', '.', ';', '<', '=', '>', '?', '@', '_', '`', '+', '-']
+
+
 for button in button_dict:
 	wiper_value = input('Wiper value for ' + button +': (default: ' + str(button_dict[button]) + ') ' )
 	button_dict[button] = set_default(wiper_value, button_dict[button])
 
 with open('settings.conf', 'w') as config_file:
 	yaml.dump({'server_url':server_url,
-		'offset':offset,
-		'press':press,
-		'hold':hold,
+		'timing_offset':offset,
+		'timing_press':press,
+		'timing_hold':hold,
 		'wipers':button_dict,
-		'set_moves':set_moves},
-		config_file,
-		default_flow_style=False)
+		'char_set_moves':set_moves,
+		'char_common_set':common_set,
+		'char_uppercase_set':uppercase_set,
+		'char_lowercase_set':lowercase_set,
+		'char_numbers_set':numbers_set},
+		config_file)
