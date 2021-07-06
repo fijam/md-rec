@@ -39,7 +39,7 @@ def request_playlist_content(playlist_tuple):
         print(ascii_track_name)
         t_list.append(ascii_track_name)
         total_time += int(response.json()['playlistItems']['items'][i]['columns'][1])
-    print('Total playlist duration: ' + str(datetime.timedelta(seconds=total_time)))
+    print(f'Total playlist duration: {datetime.timedelta(seconds=total_time)}')
     if total_time >= 4800:
         print('Warning: duration exceeds 80 minutes!')
     if item_count > 254:
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
     for track_number, track in enumerate(tracklist):
         try:
-            print('Recording: ' + tracklist[track_number])
+            print(f'Recording: {tracklist[track_number]}')
             time.sleep(0.5)
             push_button('Display', hold, 1)
             push_button('Stop', press, 2) # enter labelling mode
@@ -206,7 +206,7 @@ if __name__ == "__main__":
             answer = input('\nFinish recording current track? [Y/N] ')
             if answer == 'Y':
                 track_remaining = request_track_remaining()
-                print('Finishing track: ' + track + f' left: {track_remaining:0.0f}s')
+                print(f'Finishing track: {track}, time left: {track_remaining:0.0f}s')
                 time.sleep(track_remaining - offset)
                 cleanup_exit()
             else:
