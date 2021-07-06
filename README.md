@@ -43,13 +43,6 @@ MCP4261-503 can be a drop-in substitute.
 
 ## Requirements
 
-	Python 3.7
-	spidev
-	RPi.GPIO
-	requests
-	unidecode
-	yaml
-
 To install the required dependencies on Raspberry Pi OS:
 
 ```
@@ -60,11 +53,11 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 
 ### First time setup
 
-1. Install a supported music player along with the [beefweb](https://github.com/hyperblast/beefweb) plugin on your PC. Enable remote access in the plugin options. 
-2. Connect Raspberry Pi to your local network. (Additional steps for boards without WiFi like Pi Zero.)
+1. Install a music player with the [beefweb](https://github.com/hyperblast/beefweb) plugin on your PC. Enable remote access in the plugin options. 
+2. Connect Raspberry Pi to your local network. ([Additional steps for boards without WiFi like Pi Zero.](https://github.com/fijam/md-rec/wiki/Networking-with-Windows-over-USB))
 3. Log in to Raspberry Pi and create a settings file with `./configurator.py`
 
-### Recording a MD
+### Recording a MiniDisc
 
 1. Connect your PC audio output (toslink or analog) to the input on the MD recorder
 2. Connect the interface circuit to the remote connector on the MD recorder
@@ -83,37 +76,13 @@ Limitations inherent to the MD format:
 
 md-rec will automatically turn accented letters in track names into ASCII. This works well for Latin scripts, not so much for Asian scripts.
 
-md-rec will fail if track duration is too short to finish labelling in time for the next track.
+md-rec will fail if track duration is too short to finish labelling in time for the next track. It takes about 30-40s to label a track.
 
 ## Troubleshooting
 
-### The script hangs when trying to read the playlist:
+See the wiki page on [Troubleshooting](https://github.com/fijam/md-rec/wiki/Troubleshooting)
 
-- Make sure remote access is enabled in beefweb plugin options
-- Make sure the beefweb plugin access port is not blocked by a firewall
-- Make sure both the PC and Raspberry Pi are on the same local private network
-- Make sure the 'host' variable is set correctly
-	
-### No button presses are registered by the MD recorder:
-
-- Make sure the interface circuit is built correctly
-- Make sure Raspberry Pi is connected correctly to the circuit and that SPI works
-- Make sure the circuit is connected to the correct pins on the remote controller socket of the MD recorder
-
-### The letters entered are all gibberish:
-
-- Adjust the 'wiper' variables for each button until all button presses are registered correctly
-- Increase the value of the 'press' variable to 0.05 or more
-	
-### TMarks are entered too late:
-
-- Adjust the 'offset' variable to account for network latency
-
-## Contributors guide
-
-The script is deliberately very simple so that anyone can follow along and make changes as needed. When contributing new code to this project please try to keep it easy to understand. Try to use descriptive names for the functions and variables, making the code largely self-documenting. It is OK to be a bit verbose.
-
-### Contributions welcome
+## Contributions welcome
 
 Patches adding the following functionality are welcome:
 
@@ -121,8 +90,8 @@ Patches adding the following functionality are welcome:
 - labelling of already-recorded discs - automatic and manual modes
 - better error handling
 
-Bug reports are welcome
+The script is deliberately very simple so that anyone can follow along and make changes as needed. When contributing new code to this project please try to keep it easy to understand.
 
-Reports of successful/unsuccessful use of this script with other Sony models are welcome:
+Reports of successful/unsuccessful use of this script with other Sony models are welcome: MZ-R37, MZ-R55, MZ-R70, MZ-R900, MZ-R700, MZ-R701, MZ-R500
 
-- models that need testing: MZ-R37, MZ-R55, MZ-R70, MZ-R900, MZ-R700, MZ-R701, MZ-R500
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/fijam)
