@@ -32,7 +32,6 @@ hold = settings['timing_hold']
 wiper_dict = settings['wipers']
 set_moves = settings['char_set_moves']
 common_set = settings['char_common_set']
-common_set.reverse()
 lowercase_set = settings['char_lowercase_set']
 uppercase_set = settings['char_uppercase_set']
 numbers_set = settings['char_uppercase_set']
@@ -78,21 +77,47 @@ def set_mode_play(playlist_info):
 def set_stop():
 	requests.post(server_url + '/api/player/stop')
 
-def input_string(string_normalized):
-	track_letterlist = list(string_normalized)
+def calc_midpoint(char_set):
+	return (len(char_set)+len(common_set)) //2
+
+def calc_index(char_set,half,letter):
+	midpoint = calc_midpoint(char_set)
+	if half == 'bottom':
+		return char_set[:midpoint].index(letter)
+	elif half == 'top':
+		return list(reversed(char_set[midpoint:])).index(letter)+len(common_set)+1
+	elif half == 'common': #do not halve
+		return list(reversed(char_set)).index(letter)+1
+
+def input_string(string_ascii):
+	track_letterlist = list(string_ascii)
 	current_set = 'uppercase' # default
 
 	for letter in track_letterlist:
 		if (letter in common_set):
-			current_set = input_letter(current_set,current_set,common_set.index(letter)+1,'SearchLeft')
-		elif (letter in uppercase_set):
-			current_set = input_letter('uppercase',current_set,uppercase_set.index(letter),'SearchRight')
-		elif (letter in lowercase_set):
-			current_set = input_letter('lowercase',current_set,lowercase_set.index(letter),'SearchRight')
-		elif (letter in numbers_set):
-			current_set = input_letter('numbers',current_set,numbers_set.index(letter),'SearchRight')
+			input_letter(current_set,current_set,calc_index(common_set,'common',letter),'SearchLeft')
+			current_set = current_set
+		elif (letter in uppercase_set[:calc_midpoint(uppercase_set)]):
+			input_letter('uppercase',current_set,calc_index(uppercase_set,'bottom',letter),'SearchRight')
+			current_set = 'uppercase'
+		elif (letter in uppercase_set[calc_midpoint(uppercase_set):]):
+			input_letter('lowercase',current_set,calc_index(uppercase_set,'top',letter),'SearchLeft')
+			current_set = 'uppercase'
+		elif (letter in lowercase_set[:calc_midpoint(lowercase_set)]):
+			input_letter('lowercase',current_set,calc_index(lowercase_set,'bottom',letter),'SearchRight')
+			current_set = 'lowercase'
+		elif (letter in lowercase_set[calc_midpoint(lowercase_set):]):
+			input_letter('numbers',current_set,calc_index(lowercase_set,'top',letter),'SearchLeft')
+			current_set = 'lowercase'
+		elif (letter in numbers_set[:calc_midpoint(numbers_set)]):
+			input_letter('numbers',current_set,calc_index(numbers_set,'bottom',letter),'SearchRight')
+			current_set = 'numbers'
+		elif (letter in numbers_set[calc_midpoint(numbers_set):]):
+			input_letter('uppercase',current_set,calc_index(numbers_set,'top',letter),'SearchLeft')
+			current_set = 'numbers'
 		else:
-			current_set = input_letter('numbers',current_set,24,'SearchRight') # catch-all replace with '?'
+			input_letter('uppercase',current_set,11,'SearchLeft') # catch-all replace with '?'
+			current_set = 'numbers'
 
 	push_button('Stop',hold,1)
 
@@ -101,8 +126,6 @@ def input_letter(wanted_set,current_set,letter_index,search_button):
 	push_button('Pause',press,times)
 	push_button(search_button,press,letter_index)
 	push_button('Stop',press,1)
-	current_set = wanted_set
-	return current_set
 
 def hw_push(type,wiper):
 	#SPI MAGIC
