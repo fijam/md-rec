@@ -1,20 +1,23 @@
 #!/usr/bin/python3
-import yaml
+#pylint: disable=missing-docstring
+#pylint: disable-msg=C0103
 import ipaddress
 import string
+import sys
+import yaml
 
-def set_default(input,default):
-	if input == '':
-		input = default
-		return input
-	else:
-		return input
+def set_default(user_input, default):
+    if user_input == '':
+        user_input = default
+        return user_input
+    return user_input
 
 host = input('IP address of the computer with the music player: ')
 try:
-	ip = ipaddress.ip_address(host)
-except ValueError:
-	raise
+    ip = ipaddress.ip_address(host)
+except ValueError as err:
+    print(err)
+    sys.exit(1)
 port = input('Port used by the beefweb plugin (default: 8880) ')
 port = set_default(port, 8880)
 server_url = 'http://' + host + ':' + str(port)
@@ -30,40 +33,42 @@ hold = set_default(hold, 2.2)
 
 #defaults are currently wrong
 button_dict = {
-	'SearchLeft' : 12,
-	'SearchRight': 24,
-	'Pause' : 48,
-	'Stop' : 64,
-	'TMark' : 128,
-	'Display' : 192,
-	'Record' : 224
+    'Left' : 12,
+    'Right': 24,
+    'Pause' : 48,
+    'Stop' : 64,
+    'TMark' : 128,
+    'Display' : 192,
+    'Record' : 224
 }
 
 #character set navigation for MZ-R90
-set_moves = {'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3 },
-       		'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2 },
-	        'numbers':   {'uppercase':2, 'lowercase':3, 'numbers':1 }}
+set_moves = {'uppercase': {'uppercase':1, 'lowercase':2, 'numbers':3},
+             'lowercase': {'uppercase':3, 'lowercase':1, 'numbers':2},
+             'numbers':   {'uppercase':2, 'lowercase':3, 'numbers':1}}
 
 #character set for MZ-R90
-common_set = [ "'", ',', '/', ':', ' ']
+common_set = ["'", ',', '/', ':', ' ']
 uppercase_set = list(string.ascii_uppercase)
 lowercase_set = list(string.ascii_lowercase)
-numbers_set = list(string.digits) + ['!', '"', '#', '$', '%', '&', '(', ')', '*', '.', ';', '<', '=', '>', '?', '@', '_', '`', '+', '-']
+numbers_set = (list(string.digits)
+               + ['!', '"', '#', '$', '%', '&', '(', ')', '*', '.', ';',
+                  '<', '=', '>', '?', '@', '_', '`', '+', '-'])
 
 
 for button in button_dict:
-	wiper_value = input('Wiper value for ' + button +': (default: ' + str(button_dict[button]) + ') ' )
-	button_dict[button] = set_default(wiper_value, button_dict[button])
+    wiper_value = input(f"Wiper value for {button}: (default: {str(button_dict[button])})")
+    button_dict[button] = set_default(wiper_value, button_dict[button])
 
 with open('settings.conf', 'w') as config_file:
-	yaml.dump({'server_url':server_url,
-		'timing_offset':offset,
-		'timing_press':press,
-		'timing_hold':hold,
-		'wipers':button_dict,
-		'char_set_moves':set_moves,
-		'char_common_set':common_set,
-		'char_uppercase_set':uppercase_set,
-		'char_lowercase_set':lowercase_set,
-		'char_numbers_set':numbers_set},
-		config_file)
+    yaml.dump({'server_url':server_url,
+               'timing_offset':offset,
+               'timing_press':press,
+               'timing_hold':hold,
+               'wipers':button_dict,
+               'char_set_moves':set_moves,
+               'char_common_set':common_set,
+               'char_uppercase_set':uppercase_set,
+               'char_lowercase_set':lowercase_set,
+               'char_numbers_set':numbers_set},
+              config_file)
