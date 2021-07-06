@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+import argparse
 import string
 import time
 import datetime
@@ -10,8 +11,13 @@ import spidev
 import RPi.GPIO as GPIO
 from unidecode import unidecode
 
+# argument parsing
+parser = argparse.ArgumentParser()
+parser.add_argument('--conf',dest='conf', nargs='?', const='settings.conf', default='settings.conf', action='store', help='Name of the configuration file')
+args = parser.parse_args()
+
 # configuration
-conf_file = 'settings.conf'
+conf_file = args.conf
 try:
 	with open(conf_file) as f:
 		settings = yaml.safe_load(f)
