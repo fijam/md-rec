@@ -18,6 +18,8 @@ def parse_arguments():
     parser.add_argument('--conf', dest='conf', nargs='?', const='settings.conf',
                         default='settings.conf', action='store',
                         help='Name of the configuration file')
+    parser.add_argument('--no-tmarks', dest='no_tmarks', action='store_true',
+                        help='Do not enter track marks automatically')
     return parser.parse_args()
 
 def request_playlist_info():
@@ -36,7 +38,8 @@ def request_playlist_content(playlist_tuple):
 
     for i in range(item_count):
         ascii_track_name = unidecode(response.json()['playlistItems']['items'][i]['columns'][0])
-        print(ascii_track_name)
+        if not silent_track(ascii_track_name):
+            print(ascii_track_name)
         t_list.append(ascii_track_name)
         total_time += int(response.json()['playlistItems']['items'][i]['columns'][1])
     print(f'Total playlist duration: {datetime.timedelta(seconds=total_time)}')
@@ -60,6 +63,11 @@ def set_mode_play(playlist_tuple):
 
 def set_stop():
     requests.post(server_url + '/api/player/stop')
+
+def silent_track(track_name):
+    if track_name.casefold() == 'silence - silence':
+        return True
+    return False
 
 def calc_midpoint(char_set):
     return (len(char_set)+len(common_set)) //2
@@ -189,18 +197,23 @@ if __name__ == "__main__":
 
     for track_number, track in enumerate(tracklist):
         try:
-            print(f'Recording: {tracklist[track_number]}')
-            time.sleep(0.2)
-            push_button('Display', hold, 1)
-            push_button('Stop', press, 2) # enter labelling mode
-            input_string(tracklist[track_number])
-            track_remaining = request_track_remaining()
-            print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
-            time.sleep(track_remaining - offset)
-            if track_number+1 != len(tracklist):
-                push_button('TMark', press, 1)
+            if silent_track(track):
+                print('Skipping labelling of a silent track')
+                time.sleep(2.1)
             else:
-                push_button('Stop', press, 1)
+                print(f'Recording: {tracklist[track_number]}')
+                time.sleep(0.2)
+                push_button('Display', hold, 1)
+                push_button('Stop', press, 2) # enter labelling mode
+                input_string(tracklist[track_number])
+                track_remaining = request_track_remaining()
+                print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
+                time.sleep(track_remaining - offset)
+                if track_number+1 != len(tracklist):
+                    if not args.no_tmarks:
+                        push_button('TMark', press, 1)
+                else:
+                    push_button('Stop', press, 1)
 
         except KeyboardInterrupt:
             answer = input('\nFinish recording current track? [Y/N] ')
