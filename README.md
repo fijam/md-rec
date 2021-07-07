@@ -42,7 +42,8 @@ MCP4251-503 was selected as the IC for this project due to its low cost (~$2), g
 
 ### Schematics
 
-![mcp](https://user-images.githubusercontent.com/75824/124385086-93749280-dcd4-11eb-975d-0333a9a299c7.png)
+![mcp](https://user-images.githubusercontent.com/75824/124385086-93749280-dcd4-11eb-975d-0333a9a299c7.png)![circuit](https://user-images.githubusercontent.com/75824/124750990-6a4b4080-df26-11eb-8a8f-61b44d9fd752.jpg)
+
 
 ## Requirements
 
