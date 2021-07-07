@@ -105,7 +105,7 @@ Limitations inherent to the MD format:
 - up to 254 tracks per disk
 - up to ~200 characters per track
 - up to ~1700 total characters per disc
-- limited character set (ASCII charaters without "[ \ ] ^ { | } ~")
+- limited character set (ASCII charaters excluding `[ \ ] ^ { | } ~`)
 
 md-rec will automatically turn accented letters in track names into ASCII. This works well for Latin scripts, not so much for Asian scripts.
 
