@@ -6,13 +6,13 @@ Currently tested models: MZ-R90, MZ-R91
 
 ## Components
 
-- [Foobar2000](https://www.foobar2000.org/) (Windows) or [DeaDBeeF](https://deadbeef.sourceforge.io/) (Linux) music player with [beefweb](https://github.com/hyperblast/beefweb) plugin
+- [Foobar2000](https://www.foobar2000.org/) (Windows) or [DeaDBeeF](https://deadbeef.sourceforge.io/) (Linux/macOS) music player with [beefweb](https://github.com/hyperblast/beefweb) plugin
 - Raspberry Pi Zero W (or similar) running the md-rec script
 - interface circuit with a digital potentiometer ([MCP4251-503](https://www.microchip.com/wwwproducts/en/MCP4251) or similar)
 
 ## How it works
 
-md-rec script uses an API provided by the beefweb plugin to remotely control a compatible music player on a PC. It grabs the track names from a playlist and breaks them down into a sequence of button presses. These are subsequently translated by the interface circuit into signals recognized by the MD recorder. The script then inserts a Track Mark at end of a track and proceeds with the next item on the playlist.
+md-rec script uses an API provided by the beefweb plugin to remotely control a compatible music player on a PC. It grabs the track names from a playlist and breaks them down into a sequence of button presses. These are translated by the interface circuit into signals recognized by the MD recorder. 
 
 ```
  ----------
@@ -23,7 +23,6 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ----------
  ```
 ## Interface circuit
-
 
 The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. It is controlled by the Raspberry Pi over the Serial Peripheral Interface (SPI). It is designed to use a minimum of components and be very easy to build.
 
@@ -112,6 +111,8 @@ Limitations inherent to the MD format:
 md-rec will automatically turn accented letters in track names into ASCII. This works well for Latin scripts, not so much for Asian scripts.
 
 md-rec will fail if track duration is too short to finish labelling in time for the next track. It takes about 30-40s to label a track.
+
+In automatic mode (default) there may be duplicate TMarks entered by both the script and the recorder. See https://github.com/fijam/md-rec/issues/2 for possible workarounds.
 
 ## Troubleshooting
 
