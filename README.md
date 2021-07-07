@@ -80,23 +80,15 @@ Wait for REC Standby...
 > Open up Foobar2000 with the playlist you want to record
 Press Enter when ready.
 The following tracks will be burned & labelled:
-Amos Roddy - Gliese677Cc
-Amos Roddy - Lost Refuge
-Amos Roddy - A Living Oasis
-Amos Roddy - Anomaly
-Total playlist duration: 0:05:16
+Doctor 3 - Sgt. Pepper's Lonely Hearts Club Band
+Total playlist duration: 0:04:50
 Press Enter to begin.
-Recording: Amos Roddy - Gliese677Cc
-Track labelled. Time to TMark: 36s
-Recording: Amos Roddy - Lost Refuge
-Track labelled. Time to TMark: 28s
-Recording: Amos Roddy - A Living Oasis
-Track labelled. Time to TMark: 91s
-Recording: Amos Roddy - Anomaly
-Track labelled. Time to TMark: 85s
+Recording: Doctor 3 - Sgt. Pepper's Lonely Hearts Club Band
+Track labelled. Time to TMark: 255s
 Waiting for TOC to save...
 Bye!
 ```
+https://user-images.githubusercontent.com/75824/124761191-d3848100-df31-11eb-93bc-0f6b747f92f4.mp4
 
 ## Limitations
 
