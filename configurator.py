@@ -33,13 +33,13 @@ hold = set_default(hold, 2.2)
 
 #defaults are currently wrong
 button_dict = {
-    'Left' : 12,
-    'Right': 24,
-    'Pause' : 48,
-    'Stop' : 64,
-    'TMark' : 128,
-    'Display' : 192,
-    'Record' : 224
+    'Left' : 8,
+    'Right': 38,
+    'Pause' : 59,
+    'Stop' : 74,
+    'TMark' : 130,
+    'Display' : 185,
+    'Record' : 220
 }
 
 #character set navigation for MZ-R90
