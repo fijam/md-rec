@@ -26,8 +26,11 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
 
 The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. It is controlled by the Raspberry Pi over the Serial Peripheral Interface (SPI). It is designed to use a minimum of components and be very easy to build.
 
-MCP4251-503 was selected as the IC for this project due to its low cost (~$2), good availiability and a DIP package option. It is an 8-bit, 2-channel digital potentiometer acting as a 100-50k Ohm rheostat. Both channels are used in parallel for greater precision and lower 'resting' resistance. 
-MCP4261-503 can be a drop-in substitute. 
+![MDPlug](https://user-images.githubusercontent.com/75824/124729455-bee3c100-df10-11eb-86da-0c182e939873.png) 
+
+You can salvage a connector from a broken remote, use a piece of thin PCB with correctly spaced traces or hook up your circuit directly using springy pins such as [these](https://botland.store/connectors-raster-254-mm/6889-pin-for-case-raster254mm-10pcs.html).
+
+MCP4251-503 was selected as the IC for this project due to its low cost (~$2), good availiability and a DIP package option. It is an 8-bit, 2-channel digital potentiometer acting as a 100-50k Ohm rheostat. Both channels are used in parallel for greater precision and lower 'resting' resistance. More about suitable chips [on a separate wiki page](https://github.com/fijam/md-rec/wiki/IC-choice). 
 
 ### Bill of materials
 
@@ -54,13 +57,14 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 ### First time setup
 
 1. Install a music player with the [beefweb](https://github.com/hyperblast/beefweb) plugin on your PC. Enable remote access in the plugin options. 
-2. Connect Raspberry Pi to your local network. ([Additional steps for boards without WiFi like Pi Zero.](https://github.com/fijam/md-rec/wiki/Networking-with-Windows-over-USB))
+2. Connect Raspberry Pi to your local network. ([Additional steps for boards without WiFi like Pi Zero.](https://github.com/fijam/md-rec/wiki/Networking-with-Windows-over-USB)).
 3. Log in to Raspberry Pi and create a settings file with `./configurator.py`
+4. Enable SPI with [raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md).
 
 ### Recording a MiniDisc
 
-1. Connect your PC audio output (toslink or analog) to the input on the MD recorder
-2. Connect the interface circuit to the remote connector on the MD recorder
+1. Connect your PC audio output (toslink or analog) to the input on the MD recorder.
+2. Connect the interface circuit to the remote connector on the MD recorder.
 3. Log in to Raspberry Pi and run the script with `./md-rec.py`
 
 It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
