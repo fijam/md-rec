@@ -29,7 +29,7 @@ press = input('Duration of a short button press in seconds: (default: 0.03) ')
 press = set_default(press, 0.03)
 
 hold = input('Duration of a long button press in seconds: (default: 2.2) ')
-hold = set_default(hold, 2.2)
+hold = set_default(hold, 2.1)
 
 #defaults are currently wrong
 button_dict = {

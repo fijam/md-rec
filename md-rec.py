@@ -173,9 +173,9 @@ if __name__ == "__main__":
 
     print('> Connect your Sony Recorder and insert a blank MD')
     input('Press Enter when ready.')
+    print('Wait for REC Standby...')
     push_button('Record', press, 1) # REC Standby
-    time.sleep(0.5)
-    print('REC Standby...')
+    time.sleep(1)
 
     print('> Open up Foobar2000 with the playlist you want to record')
     input('Press Enter when ready.')
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     for track_number, track in enumerate(tracklist):
         try:
             print(f'Recording: {tracklist[track_number]}')
-            time.sleep(0.5)
+            time.sleep(0.2)
             push_button('Display', hold, 1)
             push_button('Stop', press, 2) # enter labelling mode
             input_string(tracklist[track_number])
