@@ -70,6 +70,34 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 
 It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
 
+### Sample output
+
+```
+$ ./md-rec.py
+> Connect your Sony Recorder and insert a blank MD
+Press Enter when ready.
+Wait for REC Standby...
+> Open up Foobar2000 with the playlist you want to record
+Press Enter when ready.
+The following tracks will be burned & labelled:
+Amos Roddy - Gliese677Cc
+Amos Roddy - Lost Refuge
+Amos Roddy - A Living Oasis
+Amos Roddy - Anomaly
+Total playlist duration: 0:05:16
+Press Enter to begin.
+Recording: Amos Roddy - Gliese677Cc
+Track labelled. Time to TMark: 36s
+Recording: Amos Roddy - Lost Refuge
+Track labelled. Time to TMark: 28s
+Recording: Amos Roddy - A Living Oasis
+Track labelled. Time to TMark: 91s
+Recording: Amos Roddy - Anomaly
+Track labelled. Time to TMark: 85s
+Waiting for TOC to save...
+Bye!
+```
+
 ## Limitations
 
 Limitations inherent to the MD format:
