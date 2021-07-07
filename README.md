@@ -24,6 +24,7 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ```
 ## Interface circuit
 
+
 The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. It is controlled by the Raspberry Pi over the Serial Peripheral Interface (SPI). It is designed to use a minimum of components and be very easy to build.
 
 ![MDPlug](https://user-images.githubusercontent.com/75824/124729455-bee3c100-df10-11eb-86da-0c182e939873.png) 
@@ -53,7 +54,16 @@ To install the required dependencies on Raspberry Pi OS:
 apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gpio python3-yaml
 ```
 
-## Use
+## Usage
+
+```./md-rec.py --help
+usage: md-rec.py [-h] [--conf [CONF]] [--no-tmarks]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --conf [CONF]  Name of the configuration file
+  --no-tmarks    Do not enter track marks automatically
+```
 
 ### First time setup
 
@@ -66,7 +76,7 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 
 1. Connect your PC audio output (toslink or analog) to the input on the MD recorder.
 2. Connect the interface circuit to the remote connector on the MD recorder.
-3. Log in to Raspberry Pi and run the script with `./md-rec.py`
+3. Log in to Raspberry Pi and run the interactive script with `./md-rec.py`
 
 It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
 
