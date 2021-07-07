@@ -158,7 +158,7 @@ if __name__ == "__main__":
     common_set = settings['char_common_set']
     lowercase_set = settings['char_lowercase_set']
     uppercase_set = settings['char_uppercase_set']
-    numbers_set = settings['char_uppercase_set']
+    numbers_set = settings['char_numbers_set']
     #unsupported_set = ['[', '\', ']', '^', '{', '|', '}', '~']
 
     # hardware setup
