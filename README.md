@@ -56,12 +56,13 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 ## Usage
 
 ```./md-rec.py --help
-usage: md-rec.py [-h] [--conf [CONF]] [--no-tmarks]
+usage: md-rec.py [-h] [--conf [CONF]] [--no-tmarks] [--manual]
 
 optional arguments:
   -h, --help     show this help message and exit
   --conf [CONF]  Name of the configuration file
   --no-tmarks    Do not enter track marks automatically
+  --manual       Manually label a recorded disc
 ```
 
 ### First time setup
@@ -78,6 +79,11 @@ optional arguments:
 3. Log in to Raspberry Pi and run the interactive script with `./md-rec.py`
 
 It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
+
+### Labelling a recorded MiniDisc
+
+1. Connect the interface circuit to the remote connector on the MD recorder.
+2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --manual`
 
 ### Sample output
 
