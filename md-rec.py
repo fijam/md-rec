@@ -23,7 +23,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def request_playlist_info():
-    response = requests.get(server_url + '/api/playlists')
+    response = requests.get(settings['server_url'] + '/api/playlists')
     # return a tuple of playlist ID and number of tracks
     return response.json()['playlists'][0]['id'], response.json()['playlists'][0]['itemCount']
 
@@ -34,7 +34,7 @@ def request_playlist_content(playlist_tuple):
     payload = {'playlists':'true', 'playlistItems':'true',
                'plref':playlist_tuple[0], 'plrange':'0:'+str(item_count),
                'plcolumns':'%artist% - %title%, %length_seconds%'}
-    response = requests.get(server_url+'/api/query', params=payload)
+    response = requests.get(settings['server_url']+'/api/query', params=payload)
 
     for i in range(item_count):
         ascii_track_name = unidecode(response.json()['playlistItems']['items'][i]['columns'][0])
@@ -51,18 +51,18 @@ def request_playlist_content(playlist_tuple):
     return t_list
 
 def request_track_remaining():
-    response = requests.get(server_url + '/api/player')
+    response = requests.get(settings['server_url'] + '/api/player')
     remaining = (response.json()['player']['activeItem']['duration']
                  - response.json()['player']['activeItem']['position'])
     # return remaining time in track (in seconds)
     return remaining
 
 def set_mode_play(playlist_tuple):
-    requests.post(server_url + '/api/player', params={'isMuted':'false', 'playbackMode':'0'})
-    requests.post(server_url + '/api/player/play/' + playlist_tuple[0]+'/0')
+    requests.post(settings['server_url'] + '/api/player', params={'isMuted':'false', 'playbackMode':'0'})
+    requests.post(settings['server_url'] + '/api/player/play/' + playlist_tuple[0]+'/0')
 
 def set_stop():
-    requests.post(server_url + '/api/player/stop')
+    requests.post(settings['server_url'] + '/api/player/stop')
 
 def silent_track(track_name):
     if track_name.casefold() == 'silence - silence':
@@ -70,14 +70,14 @@ def silent_track(track_name):
     return False
 
 def calc_midpoint(char_set):
-    return (len(char_set)+len(common_set)) //2
+    return (len(char_set)+len(settings['c_common_set'])) //2
 
 def calc_index(char_set, half, letter):
     midpoint = calc_midpoint(char_set)
     if half == 'bottom':
         return char_set[:midpoint].index(letter)
     if half == 'top':
-        return list(reversed(char_set[midpoint:])).index(letter)+len(common_set)+1
+        return list(reversed(char_set[midpoint:])).index(letter)+len(settings['c_common_set'])+1
     if half == 'common': #do not halve
         return list(reversed(char_set)).index(letter)+1
     return None
@@ -87,38 +87,38 @@ def input_string(string_ascii):
     cur_set = 'uppercase' # default
 
     for letter in track_letterlist:
-        if letter in common_set:
-            input_ltr(cur_set, cur_set, calc_index(common_set, 'common', letter), 'Left')
+        if letter in settings['c_common_set']:
+            input_ltr(cur_set, cur_set, calc_index(settings['c_common_set'], 'common', letter), 'Left')
             cur_set = cur_set
-        elif letter in uppercase_set[:calc_midpoint(uppercase_set)]:
-            input_ltr('uppercase', cur_set, calc_index(uppercase_set, 'bottom', letter), 'Right')
+        elif letter in settings['c_uppercase_set'][:calc_midpoint(settings['c_uppercase_set'])]:
+            input_ltr('uppercase', cur_set, calc_index(settings['c_uppercase_set'], 'bottom', letter), 'Right')
             cur_set = 'uppercase'
-        elif letter in uppercase_set[calc_midpoint(uppercase_set):]:
-            input_ltr('lowercase', cur_set, calc_index(uppercase_set, 'top', letter), 'Left')
+        elif letter in settings['c_uppercase_set'][calc_midpoint(settings['c_uppercase_set']):]:
+            input_ltr('lowercase', cur_set, calc_index(settings['c_uppercase_set'], 'top', letter), 'Left')
             cur_set = 'uppercase'
-        elif letter in lowercase_set[:calc_midpoint(lowercase_set)]:
-            input_ltr('lowercase', cur_set, calc_index(lowercase_set, 'bottom', letter), 'Right')
+        elif letter in settings['c_lowercase_set'][:calc_midpoint(settings['c_lowercase_set'])]:
+            input_ltr('lowercase', cur_set, calc_index(settings['c_lowercase_set'], 'bottom', letter), 'Right')
             cur_set = 'lowercase'
-        elif letter in lowercase_set[calc_midpoint(lowercase_set):]:
-            input_ltr('numbers', cur_set, calc_index(lowercase_set, 'top', letter), 'Left')
+        elif letter in settings['c_lowercase_set'][calc_midpoint(settings['c_lowercase_set']):]:
+            input_ltr('numbers', cur_set, calc_index(settings['c_lowercase_set'], 'top', letter), 'Left')
             cur_set = 'lowercase'
-        elif letter in numbers_set[:calc_midpoint(numbers_set)]:
-            input_ltr('numbers', cur_set, calc_index(numbers_set, 'bottom', letter), 'Right')
+        elif letter in settings['c_numbers_set'][:calc_midpoint(settings['c_numbers_set'])]:
+            input_ltr('numbers', cur_set, calc_index(settings['c_numbers_set'], 'bottom', letter), 'Right')
             cur_set = 'numbers'
-        elif letter in numbers_set[calc_midpoint(numbers_set):]:
-            input_ltr('uppercase', cur_set, calc_index(numbers_set, 'top', letter), 'Left')
+        elif letter in settings['c_numbers_set'][calc_midpoint(settings['c_numbers_set']):]:
+            input_ltr('uppercase', cur_set, calc_index(settings['c_numbers_set'], 'top', letter), 'Left')
             cur_set = 'numbers'
         else:
             input_ltr('uppercase', cur_set, 11, 'Left') # catch-all replace with '?'
             cur_set = 'numbers'
 
-    push_button('Stop', hold, 1)
+    push_button('Stop', settings['t_hold'], 1)
 
 def input_ltr(wanted_set, current_set, letter_index, search_button):
-    times = set_moves[current_set][wanted_set]
-    push_button('Pause', press, times)
-    push_button(search_button, press, letter_index)
-    push_button('Stop', press, 1)
+    times = settings['c_set_moves'][current_set][wanted_set]
+    push_button('Pause', settings['t_press'], times)
+    push_button(search_button, settings['t_press'], letter_index)
+    push_button('Stop', settings['t_press'], 1)
 
 def hw_push(timing, wiper):
     #SPI MAGIC
@@ -129,26 +129,30 @@ def hw_push(timing, wiper):
     GPIO.output(23, 1) # disable SHDN pin
     time.sleep(timing)
     GPIO.output(23, 0) # enable SHDN pin
-    time.sleep(press)
+    time.sleep(settings['t_press'])
 
 def push_button(button, timing, times):
     for _ in range(times):
         # wiper values for each button from the config file
-        hw_push(timing, int(wiper_dict[button]))
+        hw_push(timing, int(settings['wipers'][button]))
 
 def cleanup_exit():
-    push_button('Stop', press, 1)
+    push_button('Stop', settings['t_press'], 1)
     set_stop()
     GPIO.cleanup()
     print('Bye!')
     sys.exit(0)
 
-if __name__ == "__main__":
+def hardware_setup():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(23, GPIO.OUT)
 
-    # parse arguments
-    args = parse_arguments()
+    spi = spidev.SpiDev()
+    spi.open(0, 0)
+    spi.max_speed_hz = 976000
+    return spi
 
-    # configuration
+def set_config(args):
     conf_file = args.conf
     try:
         with open(conf_file) as f:
@@ -157,32 +161,22 @@ if __name__ == "__main__":
         print('No settings file found. Run configurator.py script first')
         sys.exit(1)
 
-    server_url = settings['server_url']
-    offset = settings['timing_offset']
-    press = settings['timing_press']
-    hold = settings['timing_hold']
-    wiper_dict = settings['wipers']
-    set_moves = settings['char_set_moves']
-    common_set = settings['char_common_set']
-    lowercase_set = settings['char_lowercase_set']
-    uppercase_set = settings['char_uppercase_set']
-    numbers_set = settings['char_numbers_set']
-    #unsupported_set = ['[', '\', ']', '^', '{', '|', '}', '~']
+    return settings
 
-    # hardware setup
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(23, GPIO.OUT)
+if __name__ == "__main__":
 
-    spi = spidev.SpiDev()
-    spi.open(0, 0)
-    spi.max_speed_hz = 976000
+    # parse arguments
+    args = parse_arguments()
+    settings = set_config(args)
+
+    spi = hardware_setup()
 
     # actual program starts here
 
     print('> Connect your Sony Recorder and insert a blank MD')
     input('Press Enter when ready.')
     print('Wait for REC Standby...')
-    push_button('Record', press, 1) # REC Standby
+    push_button('Record', settings['t_press'], 1) # REC Standby
     time.sleep(1)
 
     print('> Open up Foobar2000 with the playlist you want to record')
@@ -192,7 +186,7 @@ if __name__ == "__main__":
     tracklist = request_playlist_content(playlist_info)
     input('Press Enter to begin.')
 
-    push_button('Pause', press, 1) # start recording
+    push_button('Pause', settings['t_press'], 1) # start recording
     set_mode_play(playlist_info)
 
     for track_number, track in enumerate(tracklist):
@@ -203,24 +197,24 @@ if __name__ == "__main__":
             else:
                 print(f'Recording: {tracklist[track_number]}')
                 time.sleep(0.2)
-                push_button('Display', hold, 1)
-                push_button('Stop', press, 2) # enter labelling mode
+                push_button('Display', settings['t_hold'], 1)
+                push_button('Stop', settings['t_press'], 2) # enter labelling mode
                 input_string(tracklist[track_number])
                 track_remaining = request_track_remaining()
                 print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
-                time.sleep(track_remaining - offset)
+                time.sleep(track_remaining - settings['t_offset'])
                 if track_number+1 != len(tracklist):
                     if not args.no_tmarks:
-                        push_button('TMark', press, 1)
+                        push_button('TMark', settings['t_press'], 1)
                 else:
-                    push_button('Stop', press, 1)
+                    push_button('Stop', settings['t_press'], 1)
 
         except KeyboardInterrupt:
             answer = input('\nFinish recording current track? [Y/N] ')
             if answer == 'Y':
                 track_remaining = request_track_remaining()
                 print(f'Finishing track: {track}, time left: {track_remaining:0.0f}s')
-                time.sleep(track_remaining - offset)
+                time.sleep(track_remaining)
                 cleanup_exit()
             else:
                 cleanup_exit()

@@ -62,13 +62,13 @@ for button in button_dict:
 
 with open('settings.conf', 'w') as config_file:
     yaml.dump({'server_url':server_url,
-               'timing_offset':offset,
-               'timing_press':press,
-               'timing_hold':hold,
+               't_offset':offset,
+               't_press':press,
+               't_hold':hold,
                'wipers':button_dict,
-               'char_set_moves':set_moves,
-               'char_common_set':common_set,
-               'char_uppercase_set':uppercase_set,
-               'char_lowercase_set':lowercase_set,
-               'char_numbers_set':numbers_set},
+               'c_set_moves':set_moves,
+               'c_common_set':common_set,
+               'c_uppercase_set':uppercase_set,
+               'c_lowercase_set':lowercase_set,
+               'c_numbers_set':numbers_set},
               config_file)
