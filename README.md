@@ -24,13 +24,13 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ```
 ## Interface circuit
 
-The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. It is controlled by the Raspberry Pi over the Serial Peripheral Interface (SPI). It is designed to use a minimum of components and be very easy to build.
-
-![MDPlug](https://user-images.githubusercontent.com/75824/124729455-bee3c100-df10-11eb-86da-0c182e939873.png) 
+The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 1 and 3 control the display on the remote and are unused in this project.
 
 You can salvage a connector from a broken remote, use a piece of thin PCB with correctly spaced traces or hook up your circuit directly using springy pins such as [these](https://botland.store/connectors-raster-254-mm/6889-pin-for-case-raster254mm-10pcs.html).
 
-MCP4251-503 was selected as the IC for this project due to its low cost (~$2), good availiability and a DIP package option. It is an 8-bit, 2-channel digital potentiometer acting as a 100-50k Ohm rheostat. Both channels are used in parallel for greater precision and lower 'resting' resistance. More about suitable chips [on a separate wiki page](https://github.com/fijam/md-rec/wiki/IC-choice). 
+I selected MCP4251-503 for this project due to its low cost (~$2), good availiability and a DIP package option. It is a 50k Ohm, 8-bit, 2-channel digital potentiometer. It communicates with Raspberry Pi over Serial Peripheral Interface (SPI).
+
+More about suitable chips [on a separate wiki page](https://github.com/fijam/md-rec/wiki/IC-choice). 
 
 ### Bill of materials
 
@@ -80,11 +80,6 @@ optional arguments:
 
 It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
 
-### Labelling a recorded MiniDisc
-
-1. Connect the interface circuit to the remote connector on the MD recorder.
-2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --manual`
-
 ### Sample output
 
 ```
@@ -104,6 +99,11 @@ Waiting for TOC to save...
 Bye!
 ```
 https://user-images.githubusercontent.com/75824/124761191-d3848100-df31-11eb-93bc-0f6b747f92f4.mp4
+
+### Labelling a recorded MiniDisc
+
+1. Connect the interface circuit to the remote connector on the MD recorder.
+2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --manual`
 
 ## Limitations
 
@@ -126,14 +126,8 @@ See the wiki page on [Troubleshooting](https://github.com/fijam/md-rec/wiki/Trou
 
 ## Contributions welcome
 
-Patches adding the following functionality are welcome:
+Merge requests providing new functionality are welcome. The script is deliberately very simple so that anyone can follow along and make changes as needed. When contributing to this project please try to keep it easy to understand.
 
-- support for more recorder models + modularization
-- labelling of already-recorded discs - automatic and manual modes
-- better error handling
-
-The script is deliberately very simple so that anyone can follow along and make changes as needed. When contributing new code to this project please try to keep it easy to understand.
-
-Reports of successful/unsuccessful use of this script with other Sony models are welcome: MZ-R37, MZ-R55, MZ-R70, MZ-R900, MZ-R700, MZ-R701, MZ-R500
+Please report successful/unsuccessful use of this script with other Sony models: MZ-R37, MZ-R55, MZ-R70, MZ-R900, MZ-R700, MZ-R701, MZ-R500
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/fijam)
