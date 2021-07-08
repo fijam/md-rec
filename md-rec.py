@@ -20,6 +20,8 @@ def parse_arguments():
                         help='Name of the configuration file')
     parser.add_argument('--no-tmarks', dest='no_tmarks', action='store_true',
                         help='Do not enter track marks automatically')
+    parser.add_argument('--manual', dest='manual', action='store_true',
+                        help='Manually label a recorded disc')
     return parser.parse_args()
 
 def request_playlist_info():
@@ -163,15 +165,33 @@ def set_config(args):
 
     return settings
 
+def manual_mode():
+    print('> Connect your Sony Recorder and insert the MD you want to label')
+    input('Press Enter when ready.')
+    while True:
+        print('Select the track you want to label on the recorder')
+        input('Press Enter when ready.')
+        push_button('Display', settings['t_hold'], 1)
+        push_button('Stop', settings['t_press'], 2) # enter labelling mode
+        ascii_input = unidecode(input('Enter the name of the track:\n'))
+        input_string(ascii_input)
+        answer = input('Do you want to label another track? [Y/N]')
+        if answer.casefold() != 'y':
+            GPIO.cleanup()
+            print('Bye!')
+            sys.exit(0)
+
 if __name__ == "__main__":
 
     # parse arguments
     args = parse_arguments()
     settings = set_config(args)
-
     spi = hardware_setup()
 
     # actual program starts here
+
+    if args.manual:
+        manual_mode()
 
     print('> Connect your Sony Recorder and insert a blank MD')
     input('Press Enter when ready.')
@@ -211,7 +231,7 @@ if __name__ == "__main__":
 
         except KeyboardInterrupt:
             answer = input('\nFinish recording current track? [Y/N] ')
-            if answer == 'Y':
+            if answer.casefold() == 'y':
                 track_remaining = request_track_remaining()
                 print(f'Finishing track: {track}, time left: {track_remaining:0.0f}s')
                 time.sleep(track_remaining)
