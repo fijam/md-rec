@@ -102,12 +102,11 @@ https://user-images.githubusercontent.com/75824/124761191-d3848100-df31-11eb-93b
 
 ### Labelling a recorded MiniDisc by hand
 
-1. Connect the interface circuit to the remote connector on the MD recorder.
-2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --mode hand`
+With `./md-rec.py --mode hand` you can manually label an already-recorded MiniDisc by hand, one track at a time.
 
 ### Reading track names from stdin
 
-In `./md-rec.py --mode stdin` mode you can integrate md-rec with your own software. Any newline-terminated string piped in will be sanitized to ASCII and saved. Send EOF to exit. 
+With `./md-rec.py --mode stdin` you can integrate md-rec with your own software. Any newline-terminated string piped in will be sanitized to ASCII and saved. Send EOF to exit. No interactive prompts in this mode.
 
 ## Limitations
 
