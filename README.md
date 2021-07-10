@@ -56,14 +56,13 @@ apt-get install python3-spidev python3-unidecode python3-requests python3-rpi.gp
 ## Usage
 
 ```
-usage: md-rec.py [-h] [--conf [CONF]] [--no-tmarks] [--manual] [--stdin]
+usage: md-rec.py [-h] [--conf [CONF]] [--no-tmarks] [--mode {hand,stdin}]
 
 optional arguments:
-  -h, --help     show this help message and exit
-  --conf [CONF]  Name of the configuration file
-  --no-tmarks    Do not enter track marks automatically
-  --manual       Manually label a recorded disc
-  --stdin        Read track names from stdin (non-interactive)
+  -h, --help           show this help message and exit
+  --conf [CONF]        Name of the configuration file
+  --no-tmarks          Do not enter track marks automatically
+  --mode {hand,stdin}  Select manual labelling mode
 ```
 
 ### First time setup
@@ -101,14 +100,14 @@ Bye!
 ```
 https://user-images.githubusercontent.com/75824/124761191-d3848100-df31-11eb-93bc-0f6b747f92f4.mp4
 
-### Labelling a recorded MiniDisc
+### Labelling a recorded MiniDisc by hand
 
 1. Connect the interface circuit to the remote connector on the MD recorder.
-2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --manual`
+2. Log in to Raspberry Pi and run the script in manual mode with `./md-rec.py --mode hand`
 
 ### Reading track names from stdin
 
-In `./md-rec.py --stdin` mode you can integrate md-rec with your own software. Any newline-terminated string piped in will be sanitized to ASCII and saved. Send EOF to exit. 
+In `./md-rec.py --mode stdin` mode you can integrate md-rec with your own software. Any newline-terminated string piped in will be sanitized to ASCII and saved. Send EOF to exit. 
 
 ## Limitations
 
