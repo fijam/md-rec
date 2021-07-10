@@ -22,6 +22,8 @@ def parse_arguments():
                         help='Do not enter track marks automatically')
     parser.add_argument('--manual', dest='manual', action='store_true',
                         help='Manually label a recorded disc')
+    parser.add_argument('--stdin', dest='stdin', action='store_true',
+                        help='Read track names from stdin (non-interactive)')
     return parser.parse_args()
 
 def request_playlist_info():
@@ -167,6 +169,12 @@ def manual_mode():
             print('Bye!')
             sys.exit(0)
 
+def stdin_mode():
+    for line in sys.stdin:
+        input_string(unidecode(line))
+    GPIO.cleanup()
+    sys.exit(0)
+
 if __name__ == "__main__":
 
     # parse arguments
@@ -178,6 +186,8 @@ if __name__ == "__main__":
 
     if args.manual:
         manual_mode()
+    if args.stdin:
+        stdin_mode()
 
     print('> Connect your Sony Recorder and insert a blank MD')
     input('Press Enter when ready.')
