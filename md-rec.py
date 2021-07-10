@@ -71,56 +71,42 @@ def silent_track(track_name):
         return True
     return False
 
-def calc_midpoint(char_set):
-    return (len(char_set)+len(settings['c_common_set'])) //2
+def find_distance(letter):
+    # find shortest distance to first letter of any charset from either direction
+    dist_dict = {}
+    for entry in settings['c_entrypoints']:
+        search_right = (settings['c_complete'].index(letter) - settings['c_entrypoints'][entry]) % len(settings['c_complete'])
+        search_left = (settings['c_complete'].index(letter) - settings['c_entrypoints'][entry]) % -len(settings['c_complete'])
+        dist_dict[entry] = min(search_right, search_left, key=abs) # compare absolute, return signed
+    return dist_dict
 
-def calc_index(char_set, half, letter):
-    midpoint = calc_midpoint(char_set)
-    if half == 'bottom':
-        return char_set[:midpoint].index(letter)
-    if half == 'top':
-        return list(reversed(char_set[midpoint:])).index(letter)+len(settings['c_common_set'])+1
-    if half == 'common': #do not halve
-        return list(reversed(char_set)).index(letter)+1
-    return None
+def return_current_set(letter, current_set):
+    if letter in settings['c_uppercase_set']:
+        return 'uppercase'
+    if letter in settings['c_lowercase_set']:
+        return 'lowercase'
+    if letter in settings['c_numbers_set']:
+        return 'numbers'
+    return current_set
 
 def input_string(string_ascii):
     track_letterlist = list(string_ascii)
     cur_set = 'uppercase' # default
-
     for letter in track_letterlist:
-        if letter in settings['c_common_set']:
-            input_ltr(cur_set, cur_set, calc_index(settings['c_common_set'], 'common', letter), 'Left')
-            cur_set = cur_set
-        elif letter in settings['c_uppercase_set'][:calc_midpoint(settings['c_uppercase_set'])]:
-            input_ltr('uppercase', cur_set, calc_index(settings['c_uppercase_set'], 'bottom', letter), 'Right')
-            cur_set = 'uppercase'
-        elif letter in settings['c_uppercase_set'][calc_midpoint(settings['c_uppercase_set']):]:
-            input_ltr('lowercase', cur_set, calc_index(settings['c_uppercase_set'], 'top', letter), 'Left')
-            cur_set = 'uppercase'
-        elif letter in settings['c_lowercase_set'][:calc_midpoint(settings['c_lowercase_set'])]:
-            input_ltr('lowercase', cur_set, calc_index(settings['c_lowercase_set'], 'bottom', letter), 'Right')
-            cur_set = 'lowercase'
-        elif letter in settings['c_lowercase_set'][calc_midpoint(settings['c_lowercase_set']):]:
-            input_ltr('numbers', cur_set, calc_index(settings['c_lowercase_set'], 'top', letter), 'Left')
-            cur_set = 'lowercase'
-        elif letter in settings['c_numbers_set'][:calc_midpoint(settings['c_numbers_set'])]:
-            input_ltr('numbers', cur_set, calc_index(settings['c_numbers_set'], 'bottom', letter), 'Right')
-            cur_set = 'numbers'
-        elif letter in settings['c_numbers_set'][calc_midpoint(settings['c_numbers_set']):]:
-            input_ltr('uppercase', cur_set, calc_index(settings['c_numbers_set'], 'top', letter), 'Left')
-            cur_set = 'numbers'
-        else:
-            input_ltr('uppercase', cur_set, 11, 'Left') # catch-all replace with '?'
-            cur_set = 'numbers'
-
+        if letter not in settings['c_complete']:
+            letter = '?'
+        distance_dict = find_distance(letter)
+        dict_key = min(distance_dict, key=lambda k: abs(distance_dict[k]))
+        enter_correct_set(dict_key, cur_set)
+        # use sign on the modulo result to see if we are searching backward or forward
+        push_button((lambda x: (x < 0 and 'Left' or 'Right'))(distance_dict[dict_key]), settings['t_press'], abs(distance_dict[dict_key]))
+        push_button('Stop', settings['t_press'], 1)
+        cur_set = return_current_set(letter, cur_set)
     push_button('Stop', settings['t_hold'], 1)
 
-def input_ltr(wanted_set, current_set, letter_index, search_button):
+def enter_correct_set(wanted_set, current_set):
     times = settings['c_set_moves'][current_set][wanted_set]
     push_button('Pause', settings['t_press'], times)
-    push_button(search_button, settings['t_press'], letter_index)
-    push_button('Stop', settings['t_press'], 1)
 
 def hw_push(timing, wiper):
     #SPI MAGIC

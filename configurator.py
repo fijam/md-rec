@@ -54,7 +54,11 @@ lowercase_set = list(string.ascii_lowercase)
 numbers_set = (list(string.digits)
                + ['!', '"', '#', '$', '%', '&', '(', ')', '*', '.', ';',
                   '<', '=', '>', '?', '@', '_', '`', '+', '-'])
+complete_set = common_set + uppercase_set + common_set + lowercase_set + common_set + numbers_set
 
+entrypoints = {'uppercase':complete_set.index('A'),
+               'lowercase':complete_set.index('a'),
+               'numbers':complete_set.index('0')}
 
 for button in button_dict:
     wiper_value = input(f"Wiper value for {button}: (default: {str(button_dict[button])})")
@@ -67,6 +71,8 @@ with open('settings.conf', 'w') as config_file:
                't_hold':hold,
                'wipers':button_dict,
                'c_set_moves':set_moves,
+               'c_complete':complete_set,
+               'c_entrypoints':entrypoints,
                'c_common_set':common_set,
                'c_uppercase_set':uppercase_set,
                'c_lowercase_set':lowercase_set,
