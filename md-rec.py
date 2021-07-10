@@ -20,10 +20,8 @@ def parse_arguments():
                         help='Name of the configuration file')
     parser.add_argument('--no-tmarks', dest='no_tmarks', action='store_true',
                         help='Do not enter track marks automatically')
-    parser.add_argument('--manual', dest='manual', action='store_true',
-                        help='Manually label a recorded disc')
-    parser.add_argument('--stdin', dest='stdin', action='store_true',
-                        help='Read track names from stdin (non-interactive)')
+    parser.add_argument('--mode', choices=['hand', 'stdin'], dest='mode',
+                        help='Select manual labelling mode')
     return parser.parse_args()
 
 def request_playlist_info():
@@ -153,14 +151,18 @@ def set_config(args):
 
     return settings
 
+def enter_labelling():
+    push_button('Display', settings['t_hold'], 1)
+    push_button('Stop', settings['t_press'], 2) # enter labelling mode
+
+
 def manual_mode():
     print('> Connect your Sony Recorder and insert the MD you want to label')
     input('Press Enter when ready.')
     while True:
         print('Select the track you want to label on the recorder')
         input('Press Enter when ready.')
-        push_button('Display', settings['t_hold'], 1)
-        push_button('Stop', settings['t_press'], 2) # enter labelling mode
+        enter_labelling()
         ascii_input = unidecode(input('Enter the name of the track:\n'))
         input_string(ascii_input)
         answer = input('Do you want to label another track? [Y/N]')
@@ -171,6 +173,7 @@ def manual_mode():
 
 def stdin_mode():
     for line in sys.stdin:
+        enter_labelling()
         input_string(unidecode(line))
     GPIO.cleanup()
     sys.exit(0)
@@ -183,10 +186,9 @@ if __name__ == "__main__":
     spi = hardware_setup()
 
     # actual program starts here
-
-    if args.manual:
+    if args.mode == 'hand':
         manual_mode()
-    if args.stdin:
+    if args.mode == 'stdin':
         stdin_mode()
 
     print('> Connect your Sony Recorder and insert a blank MD')
@@ -213,8 +215,7 @@ if __name__ == "__main__":
             else:
                 print(f'Recording: {tracklist[track_number]}')
                 time.sleep(0.2)
-                push_button('Display', settings['t_hold'], 1)
-                push_button('Stop', settings['t_press'], 2) # enter labelling mode
+                enter_labelling()
                 input_string(tracklist[track_number])
                 track_remaining = request_track_remaining()
                 print(f'Track labelled. Time to TMark: {track_remaining:0.0f}s')
