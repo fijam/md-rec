@@ -24,11 +24,11 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ```
 ## Interface circuit
 
-The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 1 and 3 control the display on the remote and are unused in this project.
+The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 1 and 3 control the remote display and are unused.
 
 You can salvage a connector from a broken remote, use a piece of thin PCB with correctly spaced traces or hook up your circuit directly using springy pins such as [these](https://botland.store/connectors-raster-254-mm/6889-pin-for-case-raster254mm-10pcs.html).
 
-I selected MCP4251-503 for this project due to its low cost (~$2), good availiability and a DIP package option. It is a 50k Ohm, 8-bit, 2-channel digital potentiometer. It communicates with Raspberry Pi over Serial Peripheral Interface (SPI).
+I selected MCP4251-503 for this project due to its low cost (~$2), good availiability and a DIP package option. It is a 50k Ohm, 8-bit, 2-channel digital potentiometer. It communicates with Raspberry Pi over SPI.
 
 More about suitable chips [on a separate wiki page](https://github.com/fijam/md-rec/wiki/IC-choice). 
 
@@ -78,7 +78,7 @@ optional arguments:
 2. Connect the interface circuit to the remote connector on the MD recorder.
 3. Log in to Raspberry Pi and run the interactive script with `./md-rec.py`
 
-It is recommended to use the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
+Consider using the [WASAPI plugin](https://www.foobar2000.org/components/view/foo_out_wasapi) with Foobar2000 to prevent accidental recording of other system sounds.
 
 ### Sample output
 
