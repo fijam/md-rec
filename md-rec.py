@@ -125,16 +125,14 @@ def push_button(button, timing, times):
         hw_push(timing, int(settings['wipers'][button]))
 
 def cleanup_exit():
-    push_button('Stop', settings['t_press'], 1)
-    set_stop()
     GPIO.cleanup()
+    spi.close()
     print('Bye!')
-    sys.exit(0)
+    sys.exit()
 
 def hardware_setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(23, GPIO.OUT)
-
     spi = spidev.SpiDev()
     spi.open(0, 0)
     spi.max_speed_hz = 976000
@@ -147,7 +145,7 @@ def set_config(args):
             settings = yaml.safe_load(f)
     except (FileNotFoundError, IOError):
         print('No settings file found. Run configurator.py script first')
-        sys.exit(1)
+        cleanup_exit()
 
     return settings
 
@@ -167,25 +165,21 @@ def manual_mode():
         input_string(ascii_input)
         answer = input('Do you want to label another track? [Y/N]')
         if answer.casefold() != 'y':
-            GPIO.cleanup()
-            print('Bye!')
-            sys.exit(0)
+            cleanup_exit()
 
 def stdin_mode():
     for line in sys.stdin:
         enter_labelling()
         input_string(unidecode(line))
-    GPIO.cleanup()
-    sys.exit(0)
+    cleanup_exit()
 
-if __name__ == "__main__":
+# actual program starts here
 
-    # parse arguments
-    args = parse_arguments()
-    settings = set_config(args)
-    spi = hardware_setup()
+args = parse_arguments()
+settings = set_config(args)
+spi = hardware_setup()
 
-    # actual program starts here
+try:
     if args.mode == 'hand':
         manual_mode()
     if args.mode == 'stdin':
@@ -232,10 +226,16 @@ if __name__ == "__main__":
                 track_remaining = request_track_remaining()
                 print(f'Finishing track: {track}, time left: {track_remaining:0.0f}s')
                 time.sleep(track_remaining)
-                cleanup_exit()
+                push_button('Stop', settings['t_press'], 1)
+                set_stop()
+                raise
             else:
-                cleanup_exit()
+                push_button('Stop', settings['t_press'], 1)
+                set_stop()
+                raise
 
     print('Waiting for TOC to save...')
     time.sleep(10)
+
+finally:
     cleanup_exit()
