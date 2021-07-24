@@ -145,7 +145,7 @@ def set_config(args):
             settings = yaml.safe_load(f)
     except (FileNotFoundError, IOError):
         print('No settings file found. Run configurator.py script first')
-        cleanup_exit()
+        raise
 
     return settings
 
@@ -176,10 +176,11 @@ def stdin_mode():
 # actual program starts here
 
 args = parse_arguments()
-settings = set_config(args)
-spi = hardware_setup()
 
 try:
+    spi = hardware_setup()
+    settings = set_config(args)
+
     if args.mode == 'hand':
         manual_mode()
     if args.mode == 'stdin':
