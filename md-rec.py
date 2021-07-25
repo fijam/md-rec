@@ -165,13 +165,13 @@ def manual_mode():
         input_string(ascii_input)
         answer = input('Do you want to label another track? [Y/N]')
         if answer.casefold() != 'y':
-            cleanup_exit()
+            raise
 
 def stdin_mode():
     for line in sys.stdin:
         enter_labelling()
         input_string(unidecode(line))
-    cleanup_exit()
+    raise
 
 # actual program starts here
 
