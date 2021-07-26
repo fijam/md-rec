@@ -114,9 +114,9 @@ def hw_push(timing, wiper):
     command1 = 0b00010000 # CH1: 01h address + 00 write cmd + 00 data
     spi.xfer([command0, wiper])
     spi.xfer([command1, wiper])
-    GPIO.output(23, 1) # disable SHDN pin
+    GPIO.output(int(settings['shdn']), 1) # disable SHDN pin
     time.sleep(timing)
-    GPIO.output(23, 0) # enable SHDN pin
+    GPIO.output(int(settings['shdn']), 0) # enable SHDN pin
     time.sleep(settings['t_press'])
 
 def push_button(button, timing, times):
@@ -132,7 +132,7 @@ def cleanup_exit():
 
 def hardware_setup():
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(23, GPIO.OUT)
+    GPIO.setup(int(settings['shdn']), GPIO.OUT)
     spi = spidev.SpiDev()
     spi.open(0, 0)
     spi.max_speed_hz = 976000
@@ -144,7 +144,7 @@ def set_config(args):
         with open(conf_file) as f:
             settings = yaml.safe_load(f)
     except (FileNotFoundError, IOError):
-        print('No settings file found. Run configurator.py script first')
+        print('No settings file found. Run configurator.py script first\n')
         raise
 
     return settings
@@ -176,10 +176,10 @@ def stdin_mode():
 # actual program starts here
 
 args = parse_arguments()
+settings = set_config(args)
 
 try:
     spi = hardware_setup()
-    settings = set_config(args)
 
     if args.mode == 'hand':
         manual_mode()

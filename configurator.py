@@ -22,24 +22,27 @@ port = input('Port used by the beefweb plugin (default: 8880) ')
 port = set_default(port, 8880)
 server_url = 'http://' + host + ':' + str(port)
 
+shdn_gpio = input('GPIO used for Shutdown pin (default: 23) ')
+shdn_gpio = set_default(shdn_gpio, 23)
+
 offset = input('TMark negative offset in seconds: (default: 0.1) ')
 offset = set_default(offset, 0.1)
 
 press = input('Duration of a short button press in seconds: (default: 0.03) ')
 press = set_default(press, 0.03)
 
-hold = input('Duration of a long button press in seconds: (default: 2.2) ')
+hold = input('Duration of a long button press in seconds: (default: 2.1) ')
 hold = set_default(hold, 2.1)
 
 #defaults are currently wrong
 button_dict = {
-    'Left' : 8,
-    'Right': 38,
+    'Left' : 9,
+    'Right': 39,
     'Pause' : 59,
-    'Stop' : 74,
-    'TMark' : 130,
-    'Display' : 185,
-    'Record' : 220
+    'Stop' : 76,
+    'TMark' : 132,
+    'Display' : 186,
+    'Record' : 224
 }
 
 #character set navigation for MZ-R90
@@ -70,6 +73,7 @@ with open('settings.conf', 'w') as config_file:
                't_press':press,
                't_hold':hold,
                'wipers':button_dict,
+               'shdn':shdn_gpio,
                'c_set_moves':set_moves,
                'c_complete':complete_set,
                'c_entrypoints':entrypoints,
