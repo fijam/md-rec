@@ -160,9 +160,11 @@ def manual_mode():
     while True:
         print('Select the track you want to label on the recorder')
         input('Press Enter when ready.')
-        enter_labelling()
         ascii_input = unidecode(input('Enter the name of the track:\n'))
+        push_button('Play', settings['t_press'], 1)
+        enter_labelling()
         input_string(ascii_input)
+        push_button('Stop', settings['t_press'], 1)
         answer = input('Do you want to label another track? [Y/N]')
         if answer.casefold() != 'y':
             raise
