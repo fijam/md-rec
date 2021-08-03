@@ -29,12 +29,11 @@ def request_playlist_info():
     # return a tuple of playlist ID and number of tracks
     return response.json()['playlists'][0]['id'], response.json()['playlists'][0]['itemCount']
 
-def request_playlist_content(playlist_tuple):
+def request_playlist_content(playlist_id, item_count):
     t_list = []
     total_time = 0
-    item_count = playlist_tuple[1]
     payload = {'playlists':'true', 'playlistItems':'true',
-               'plref':playlist_tuple[0], 'plrange':'0:'+str(item_count),
+               'plref':playlist_id, 'plrange':'0:'+str(item_count),
                'plcolumns':'%artist% - %title%, %length_seconds%'}
     response = requests.get(settings['server_url']+'/api/query', params=payload)
 
@@ -59,9 +58,9 @@ def request_track_remaining():
     # return remaining time in track (in seconds)
     return remaining
 
-def set_mode_play(playlist_tuple):
+def set_mode_play(playlist_id):
     requests.post(settings['server_url'] + '/api/player', params={'isMuted':'false', 'playbackMode':'0'})
-    requests.post(settings['server_url'] + '/api/player/play/' + playlist_tuple[0]+'/0')
+    requests.post(settings['server_url'] + '/api/player/play/' + playlist_id+'/0')
 
 def set_stop():
     requests.post(settings['server_url'] + '/api/player/stop')
@@ -197,12 +196,12 @@ try:
     print('> Open up Foobar2000 with the playlist you want to record')
     input('Press Enter when ready.')
     print('The following tracks will be burned & labelled:')
-    playlist_info = request_playlist_info()
-    tracklist = request_playlist_content(playlist_info)
+    playlist_id, item_count = request_playlist_info()
+    tracklist = request_playlist_content(playlist_id, item_count)
     input('Press Enter to begin.')
 
     push_button('Pause', settings['t_press'], 1) # start recording
-    set_mode_play(playlist_info)
+    set_mode_play(playlist_id)
 
     for track_number, track in enumerate(tracklist):
         try:
