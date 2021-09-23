@@ -24,7 +24,7 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ```
 ## Interface circuit
 
-The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. You also need to connect the digital ground which is on pin 1. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 3 controls the remote display and is unused.
+The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. You also need to connect the digital ground which is on pin 1. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pin 3 controls the remote display and is unused.
 
 You can salvage a connector from a broken remote, use a piece of thin PCB with correctly spaced traces or hook up your circuit directly using springy pins such as [these](https://botland.store/connectors-raster-254-mm/6889-pin-for-case-raster254mm-10pcs.html).
 
