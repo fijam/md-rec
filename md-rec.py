@@ -151,7 +151,9 @@ def set_config(args):
     return settings
 
 def enter_labelling():
+    time.sleep(0.1)
     push_button('Display', settings['t_hold'], 1)
+    time.sleep(0.1)
     push_button('Stop', settings['t_press'], 2) # enter labelling mode
 
 
