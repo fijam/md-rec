@@ -110,12 +110,9 @@ def enter_correct_set(wanted_set, current_set):
 def hw_push(timing, wiper):
     #SPI MAGIC
     command0 = 0b00000000 # CH0: 00h address + 00 write cmd + 00 data
-    command1 = 0b00010000 # CH1: 01h address + 00 write cmd + 00 data
     spi.xfer([command0, wiper])
-    spi.xfer([command1, wiper])
-    GPIO.output(int(settings['shdn']), 1) # disable SHDN pin
     time.sleep(timing)
-    GPIO.output(int(settings['shdn']), 0) # enable SHDN pin
+    spi.xfer([command0, 0])
     time.sleep(settings['t_press'])
 
 def push_button(button, timing, times):
@@ -124,17 +121,22 @@ def push_button(button, timing, times):
         hw_push(timing, int(settings['wipers'][button]))
 
 def cleanup_exit():
+    GPIO.output(int(settings['shdn']), 0)
     GPIO.cleanup()
     spi.close()
     print('Bye!')
     sys.exit()
 
 def hardware_setup():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(int(settings['shdn']), GPIO.OUT)
     spi = spidev.SpiDev()
     spi.open(0, 0)
     spi.max_speed_hz = 976000
+    command0 = 0b00000000 # CH0: 00h address + 00 write cmd + 00 data
+    spi.xfer([command0, 0])
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(int(settings['shdn']), GPIO.OUT)
+    GPIO.output(int(settings['shdn']), 1)
     return spi
 
 def set_config(args):

@@ -35,14 +35,14 @@ hold = input('Duration of a long button press in seconds: (default: 2.1) ')
 hold = set_default(hold, 2.1)
 
 button_dict = {
-    'Play' : 2,
-    'Left' : 10,
-    'Right': 40,
-    'Pause' : 58,
-    'Stop' : 78,
-    'TMark' : 132,
-    'Display' : 186,
-    'Record' : 224
+    'Play' : 255,
+    'Left' : 251,
+    'Right': 237,
+    'Pause' : 228,
+    'Stop' : 217,
+    'TMark' : 190,
+    'Display' : 161,
+    'Record' : 142
 }
 
 #character set navigation for MZ-R90
