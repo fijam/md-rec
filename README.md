@@ -24,7 +24,7 @@ md-rec script uses an API provided by the beefweb plugin to remotely control a c
  ```
 ## Interface circuit
 
-The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 1 and 3 control the remote display and are unused.
+The circuit simulates a button press by changing resistance between pin 2 and 4 of the remote connector. You also need to connect the digital ground which is on pin 1. The pin order on the remote connector is: mini jack, 1, 2, 3, 4. Pins 3 controls the remote display and is unused.
 
 You can salvage a connector from a broken remote, use a piece of thin PCB with correctly spaced traces or hook up your circuit directly using springy pins such as [these](https://botland.store/connectors-raster-254-mm/6889-pin-for-case-raster254mm-10pcs.html).
 
@@ -42,7 +42,7 @@ More about suitable chips [on a separate wiki page](https://github.com/fijam/md-
 
 ### Schematics
 
-![mcp](https://user-images.githubusercontent.com/75824/124385086-93749280-dcd4-11eb-975d-0333a9a299c7.png)![circuit](https://user-images.githubusercontent.com/75824/124750990-6a4b4080-df26-11eb-8a8f-61b44d9fd752.jpg)
+![md-rec-scheme-2](https://user-images.githubusercontent.com/75824/134492103-87766ddb-2c5f-476a-93d0-dde07fdb5773.png)
 
 
 ## Requirements
