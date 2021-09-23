@@ -66,9 +66,7 @@ def set_stop():
     requests.post(settings['server_url'] + '/api/player/stop')
 
 def silent_track(track_name):
-    if track_name.casefold() == 'silence - silence':
-        return True
-    return False
+    return True if track_name.casefold() == 'silence - silence' else False
 
 def find_distance(letter):
     # find shortest distance to first letter of any charset from either direction
