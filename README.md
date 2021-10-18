@@ -1,3 +1,5 @@
+### Note: A new version which does not require a Raspberry Pi for operation is available here: https://github.com/fijam/gmdrec
+
 ## Overview
 
 md-rec automatically records, labels and marks tracks on compatible Sony MiniDisc recorders without NetMD.
